@@ -6,7 +6,7 @@
 
 import inspect, os
 import commands
-import urllib2
+import requests
 import re
 import argparse
 
@@ -35,12 +35,15 @@ with open(payload_file, 'r') as payload:
 # TODO:
 ## Need to add Sniper and BatteringRam options (Burp Intruder style) 
 ## Multi-threaded
+
 for fuzz_item in fuzz_items:
-
     fuzzed_request = prefuzzed_request.replace('{{PAYLOAD}}', fuzz_item)
-    request = urllib2.urlopen(url, fuzzed_request) # I believe that makes it a POST rather than a GET
-    response = request.read()
+    request = requests.post(url, data=fuzzed_request, allow_redirects=True)
 
+    if(request.status_code != 200):
+        print '[INFO] Didn\'t get 200 OK: Got status code % \n' (request.status_code)
+
+    response = request.text
     print response
 
 print 'Finished :>'
