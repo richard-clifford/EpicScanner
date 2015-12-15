@@ -38,8 +38,10 @@ with open(payload_file, 'r') as payload:
 
 for fuzz_item in fuzz_items:
     fuzzed_request = prefuzzed_request.replace('{{PAYLOAD}}', fuzz_item)
-    request = requests.post(url, data=fuzzed_request, allow_redirects=True)
 
+    headers = {'User-Agent': 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)'}
+
+    request = requests.post(url, data=fuzzed_request, headers=headers, allow_redirects=True)
     if(request.status_code != 200):
         print '[INFO] Didn\'t get 200 OK: Got status code % \n' (request.status_code)
 
