@@ -11,10 +11,10 @@ import re
 import argparse
 
 parser = argparse.ArgumentParser(description='Welcome to the most EPIC scanner ever, written by masterminds (Mantis, Oblivion)')
-parser.add_argument('--payload-file', type=str, help='The payload file (usually .xml)')
+parser.add_argument('--payload-file', required=True, type=str, help='The payload file (usually .xml)')
 parser.add_argument('--fuzz-file', type=str, help='The file with the fuzz strings. Each fuzz item must be on a new line!')
-parser.add_argument('--target', type=str, help='The target URL: http://example.com')
-parser.add_argument('--target-uri', type=str, help='The XMLRPC endpoint: /xmlrpc.php')
+parser.add_argument('--target', required=True, type=str, help='The target URL: http://example.com')
+parser.add_argument('--target-uri', required=True, type=str, help='The XMLRPC endpoint: /xmlrpc.php')
 args = parser.parse_args()
 
 fuzz_file = args.fuzz_file
@@ -22,7 +22,7 @@ payload_file = args.payload_file
 target = args.target
 target_uri = args.target_uri
 
-if(len(fuzz_file) == 0): # Check if it was passed in
+if(fuzz_file == None or len(fuzz_file) == 0): # Check if it was passed in
     fuzz_file = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + '/payloads/full.payloads.txt'
 
 fuzz_items = open(fuzz_file).readlines() 
@@ -46,6 +46,6 @@ for fuzz_item in fuzz_items:
         print '[INFO] Didn\'t get 200 OK: Got status code % \n' (request.status_code)
 
     response = request.text
-    print response
+    print 'Payload: %s \n Response:\n %s' % (fuzz_item, response)
 
 print 'Finished :>'
